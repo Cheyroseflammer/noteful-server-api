@@ -10,7 +10,7 @@ const serializeNote = (note) => ({
   id: note.id,
   name: xss(note.name),
   modified: note.modified,
-  folderId: xss(note.folderId),
+  folderId: note.folderId,
   content: xss(note.content),
 });
 
@@ -19,14 +19,14 @@ notesRouter
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     NotesService.getAllNotes(knexInstance)
-      .then(notes => {
+      .then((notes) => {
         res.json(notes.map(serializeNote));
       })
       .catch(next);
   })
   .post(jsonParser, (req, res, next) => {
     const { name, folderId, content } = req.body;
-    console.log(req.body)
+    console.log(req.body);
     const newNote = { name, folderId, content };
 
     for (const [key, value] of Object.entries(newNote))
@@ -60,7 +60,7 @@ notesRouter
       })
       .catch(next);
   })
-  .get((req, res, next) => {
+  .get((req, res) => {
     res.json(serializeNote(res.note));
   })
   .delete((req, res, next) => {

@@ -17,8 +17,8 @@ foldersRouter
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     FoldersService.getAllFolders(knexInstance)
-      .then((folders) => {
-        res.json(folders.map(serializeFolder));
+      .then((folder) => {
+        res.json(folder.map(serializeFolder));
       })
       .catch(next);
   })
@@ -33,7 +33,7 @@ foldersRouter
         });
 
     FoldersService.insertFolder(req.app.get('db'), newFolder)
-      .then(folder => {
+      .then((folder) => {
         res
           .status(201)
           .location(
@@ -48,7 +48,7 @@ foldersRouter
   // need explanation of the .all block
   .route('/:folderId')
   .all((req, res, next) => {
-    FoldersService.getById(req.app.get('db'), req.params.folderId)
+    FoldersService.getById(req.app.get('db'), req.params.id)
       .then((folder) => {
         if (!folder) {
           return res.status(404).json({
@@ -64,7 +64,7 @@ foldersRouter
     res.json(serializeFolder(res.folder));
   })
   .delete((req, res, next) => {
-    FoldersService.deleteFolder(req.app.get('db'), req.params.folderId)
+    FoldersService.deleteFolder(req.app.get('db'), req.params.id)
       .then((numRowsAffected) => {
         res.status(204).end();
       })
